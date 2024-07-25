@@ -1,5 +1,6 @@
 package net.macmv.colacoin;
 
+import net.macmv.colacoin.item.CCItems;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -26,7 +27,8 @@ public class ColaCoin {
   @SubscribeEvent
   public void registerItems(RegistryEvent.Register<Item> event) {
     IForgeRegistry<Item> reg = event.getRegistry();
-    // TODO
+
+    CCItems.registerAll(reg);
   }
 
   @SubscribeEvent
