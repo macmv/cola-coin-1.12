@@ -1,0 +1,16 @@
+[
+{
+  "modid": "colacoin",
+  "name": "Cola Coin",
+  "description": "Cola Coin mod.",
+  "version": "1.0",
+  "mcversion": "1.12.2",
+  "url": "cola coin",
+  "updateUrl": "",
+  "authorList": ["Cola Coin"],
+  "credits": "Cola Coin",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
