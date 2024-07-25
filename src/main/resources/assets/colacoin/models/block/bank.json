@@ -1,6 +1,66 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/block",
+  "elements": [
+    {
+      "from": [ 1, 0, 1 ],
+      "to": [ 15, 10, 15 ],
+      "faces": {
+        "down":  { "texture": "#down", "cullface": "down" },
+        "up":    { "texture": "#up" },
+        "north": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west":  { "texture": "#side" },
+        "east":  { "texture": "#side" }
+      }
+    },
+    {
+      "from": [ 2, 10, 2 ],
+      "to": [ 14, 13, 14 ],
+      "faces": {
+        "up":    { "texture": "#up" },
+        "north": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west":  { "texture": "#side" },
+        "east":  { "texture": "#side" }
+      }
+    },
+    {
+      "from": [ 3, 13, 3 ],
+      "to": [ 13, 14, 13 ],
+      "faces": {
+        "up":    { "texture": "#up" },
+        "north": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west":  { "texture": "#side" },
+        "east":  { "texture": "#side" }
+      }
+    },
+    {
+      "from": [ 4, 14, 4 ],
+      "to": [ 12, 15, 12 ],
+      "faces": {
+        "up":    { "texture": "#up" },
+        "north": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west":  { "texture": "#side" },
+        "east":  { "texture": "#side" }
+      }
+    },
+    {
+      "from": [ 6, 15, 6 ],
+      "to": [ 10, 16, 10 ],
+      "faces": {
+        "up":    { "texture": "#up" },
+        "north": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west":  { "texture": "#side" },
+        "east":  { "texture": "#side" }
+      }
+    }
+  ],
   "textures": {
-    "all": "blocks/wool_colored_yellow"
+    "side": "colacoin:blocks/bank_side",
+    "up": "colacoin:blocks/bank_top",
+    "down": "colacoin:blocks/bank_bottom"
   }
 }
