@@ -61,6 +61,7 @@
   "textures": {
     "side": "colacoin:blocks/bank_side",
     "up": "colacoin:blocks/bank_top",
-    "down": "colacoin:blocks/bank_bottom"
+    "down": "colacoin:blocks/bank_bottom",
+    "particle": "colacoin:blocks/bank_top"
   }
 }
