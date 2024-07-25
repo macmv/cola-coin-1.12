@@ -14,7 +14,7 @@ import java.util.Map;
 public class CCItems {
   private final static Map<String, Item> items = new HashMap<>();
 
-  public static Voucher voucher = register("voucher", new Voucher());
+  public static Voucher VOUCHER = register("voucher", new Voucher());
 
   private static <T extends Item> T register(String itemName, T item) {
     String name = ColaCoin.MODID + ":" + itemName;
