@@ -1,5 +1,6 @@
 package net.macmv.colacoin.gui;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -22,6 +23,15 @@ public class LoginScreen extends GuiScreen {
   public void initGui() {
     this.x = (this.width - this.windowWidth) / 2;
     this.y = (this.height - this.windowHeight) / 2;
+
+    buttonList.add(new LoginButton(100, x + 100, y + 150));
+  }
+
+  @Override
+  protected void actionPerformed(GuiButton button) throws IOException {
+    if (button instanceof LoginButton) {
+      secret = "hello";
+    }
   }
 
   @Override
@@ -40,6 +50,8 @@ public class LoginScreen extends GuiScreen {
     drawRect(34 + width, 52, 35 + width, 53 + fontRenderer.FONT_HEIGHT, 0xff000000);
 
     GlStateManager.popMatrix();
+
+    super.drawScreen(mouseX, mouseY, partialTicks);
   }
 
   @Override
@@ -60,6 +72,17 @@ public class LoginScreen extends GuiScreen {
 
     if (secret.length() > 40) {
       secret = secret.substring(0, 40);
+    }
+  }
+
+  @SideOnly(Side.CLIENT)
+  class LoginButton extends GuiButton {
+    public LoginButton(int buttonId, int x, int y) {
+      super(buttonId, x, y, 200, 20, "Login");
+    }
+
+    public void drawButtonForegroundLayer(int mouseX, int mouseY) {
+      drawHoveringText("Login", mouseX, mouseY);
     }
   }
 }
