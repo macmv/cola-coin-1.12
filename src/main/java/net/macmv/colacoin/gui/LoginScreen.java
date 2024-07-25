@@ -12,8 +12,8 @@ import java.io.IOException;
 public class LoginScreen extends GuiScreen {
   private static final ResourceLocation LOGIN_BACKGROUND = new ResourceLocation("colacoin:textures/gui/login_background.png");
 
-  protected final int windowWidth = 176;
-  protected final int windowHeight = 166;
+  protected final int windowWidth = 368;
+  protected final int windowHeight = 224;
   private int x;
   private int y;
   private String secret = "";
@@ -33,7 +33,7 @@ public class LoginScreen extends GuiScreen {
 
     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     mc.getTextureManager().bindTexture(LOGIN_BACKGROUND);
-    drawTexturedModalRect(0, 0, 0, 0, this.windowWidth, this.windowHeight);
+    drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.windowWidth, this.windowHeight, 512, 256);
 
     int width = fontRenderer.getStringWidth(secret);
     drawString(fontRenderer, secret, 34, 53, 0xffffff);
