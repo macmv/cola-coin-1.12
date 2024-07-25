@@ -1,5 +1,9 @@
 package net.macmv.colacoin.gui;
 
+import net.macmv.colacoin.ColaCoin;
+import net.macmv.colacoin.network.packet.LoginRequest;
+import net.macmv.colacoin.network.packet.LoginResponse;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,6 +23,9 @@ public class LoginScreen extends GuiScreen {
   private int y;
   private String secret = "";
 
+  private boolean requested = false;
+  private boolean success = false;
+
   @Override
   public void initGui() {
     this.x = (this.width - this.windowWidth) / 2;
@@ -30,7 +37,10 @@ public class LoginScreen extends GuiScreen {
   @Override
   protected void actionPerformed(GuiButton button) throws IOException {
     if (button instanceof LoginButton) {
-      secret = "hello";
+      if (!requested) {
+        ColaCoin.NETWORK.sendToServer(new LoginRequest(secret));
+        requested = true;
+      }
     }
   }
 
@@ -74,6 +84,13 @@ public class LoginScreen extends GuiScreen {
       secret = secret.substring(0, 40);
     }
   }
+  public void onLoginResponse(LoginResponse message) {
+    if (this.requested) {
+      this.requested = false;
+      this.success = message.success;
+      this.secret = "Success!";
+    }
+  }
 
   @SideOnly(Side.CLIENT)
   class LoginButton extends GuiButton {
@@ -83,6 +100,12 @@ public class LoginScreen extends GuiScreen {
 
     public void drawButtonForegroundLayer(int mouseX, int mouseY) {
       drawHoveringText("Login", mouseX, mouseY);
+    }
+
+    @Override
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+      this.enabled = !requested;
+      super.drawButton(mc, mouseX, mouseY, partialTicks);
     }
   }
 }
