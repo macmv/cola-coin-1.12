@@ -1,5 +1,6 @@
 package net.macmv.colacoin;
 
+import net.macmv.colacoin.block.CCBlocks;
 import net.macmv.colacoin.item.CCItems;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -33,7 +34,8 @@ public class ColaCoin {
   @SubscribeEvent
   public void registerBlocks(RegistryEvent.Register<Block> event) {
     IForgeRegistry<Block> reg = event.getRegistry();
-    // TODO
+
+    CCBlocks.registerAll(reg);
   }
 
   @SubscribeEvent

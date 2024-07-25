@@ -1,8 +1,11 @@
 package net.macmv.colacoin.item;
 
 import net.macmv.colacoin.ColaCoin;
+import net.macmv.colacoin.block.CCBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -15,6 +18,12 @@ public class CCItems {
   private final static Map<String, Item> items = new HashMap<>();
 
   public static Voucher VOUCHER = register("voucher", new Voucher());
+
+  public static ItemBlock BANK = register(CCBlocks.BANK);
+
+  private static ItemBlock register(Block block) {
+    return register(block.getRegistryName().getResourcePath(), new ItemBlock(block));
+  }
 
   private static <T extends Item> T register(String itemName, T item) {
     String name = ColaCoin.MODID + ":" + itemName;
