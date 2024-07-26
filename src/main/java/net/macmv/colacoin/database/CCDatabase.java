@@ -2,24 +2,17 @@ package net.macmv.colacoin.database;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CCDatabase {
-  private static final URI FAUNA = URI.create("https://db.fauna.com/query/1");
+  private static final String FAUNA = "https://db.fauna.com/query/1";
 
   public static CCDatabase INSTANCE = new CCDatabase();
 
@@ -37,19 +30,14 @@ public class CCDatabase {
     return post(secret, "redeem_voucher(Voucher(id))", args, RedeemedVoucher.class);
   }
 
-  private HttpClient client = HttpClients.createDefault();
-
   private <T extends JsonValue> QueryResponse<T> post(String secret, String query, Map<String, Long> args, Class<T> clazz) {
-    try {
-      return parseResponse(client.execute(buildRequest(secret, query, args)), clazz);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    HttpConnection client = new HttpConnection(FAUNA);
+    return parseResponse(client.send(buildRequest(secret, query, args)), clazz);
   }
 
-  private HttpPost buildRequest(String secret, String query, Map<String, Long> args) {
+  private HttpRequest buildRequest(String secret, String query, Map<String, Long> args) {
     try {
-      HttpPost post = new HttpPost(FAUNA);
+      HttpRequest request = new HttpRequest();
 
       Writer out = new StringWriter();
       JsonWriter writer = new JsonWriter(out);
@@ -69,11 +57,11 @@ public class CCDatabase {
       writer.endObject();
       writer.close();
 
-      post.setHeader("Authorization", "Bearer " + secret);
-      post.setHeader("Content-Type", "application/json");
-      post.setEntity(new StringEntity(out.toString()));
+      request.setHeader("Authorization", "Bearer " + secret);
+      request.setHeader("Content-Type", "application/json");
+      request.setBody(out.toString());
 
-      return post;
+      return request;
     } catch (IOException e) {
       throw new RuntimeException(e); // unreachable
     }
@@ -81,8 +69,7 @@ public class CCDatabase {
 
   private <T extends JsonValue> QueryResponse<T> parseResponse(HttpResponse response, Class<T> clazz) {
     try {
-      String res = EntityUtils.toString(response.getEntity());
-      JsonReader reader = new JsonReader(new StringReader(res));
+      JsonReader reader = new JsonReader(new StringReader(response.body));
 
       QueryResponse qr = null;
 
