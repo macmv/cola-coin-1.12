@@ -25,6 +25,7 @@ public class LoginScreen extends GuiScreen {
 
   private boolean requested = false;
   private boolean success = false;
+  private String message = "";
 
   @Override
   public void initGui() {
@@ -59,6 +60,8 @@ public class LoginScreen extends GuiScreen {
     drawString(fontRenderer, secret, 34, 53, 0xffffff);
     drawRect(34 + width, 52, 35 + width, 53 + fontRenderer.FONT_HEIGHT, 0xff000000);
 
+    drawCenteredString(fontRenderer, message, windowWidth / 2, 100, success ? 0x00ff00 : 0xff0000);
+
     GlStateManager.popMatrix();
 
     super.drawScreen(mouseX, mouseY, partialTicks);
@@ -88,7 +91,7 @@ public class LoginScreen extends GuiScreen {
     if (this.requested) {
       this.requested = false;
       this.success = res.success;
-      this.secret = res.message;
+      this.message = res.message;
     }
   }
 

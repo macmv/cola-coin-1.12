@@ -19,7 +19,7 @@ public class LoginRequestHandler implements IMessageHandler<LoginRequest, LoginR
 
     if (res instanceof QuerySuccess) {
       LoginResult out = ((QuerySuccess<LoginResult>) res).value;
-      return new LoginResponse(true, out.username);
+      return new LoginResponse(true, "Logged in as " + out.username);
     } else {
       return new LoginResponse(false, "Login failed");
     }
