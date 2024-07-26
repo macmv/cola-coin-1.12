@@ -1,7 +1,7 @@
 package net.macmv.colacoin.network.handler;
 
+import net.macmv.colacoin.database.AccountStatus;
 import net.macmv.colacoin.database.CCDatabase;
-import net.macmv.colacoin.database.LoginResult;
 import net.macmv.colacoin.database.QueryResponse;
 import net.macmv.colacoin.database.QuerySuccess;
 import net.macmv.colacoin.network.packet.LoginRequest;
@@ -16,10 +16,10 @@ public class LoginRequestHandler implements IMessageHandler<LoginRequest, LoginR
   public LoginResponse onMessage(LoginRequest message, MessageContext ctx) {
     EntityPlayerMP player = ctx.getServerHandler().player;
 
-    QueryResponse<LoginResult> res = CCDatabase.INSTANCE.login(player, message.secret);
+    QueryResponse<AccountStatus> res = CCDatabase.INSTANCE.status(message.secret);
 
     if (res instanceof QuerySuccess) {
-      LoginResult out = ((QuerySuccess<LoginResult>) res).value;
+      AccountStatus out = ((QuerySuccess<AccountStatus>) res).value;
 
       CCStore.get(player.world).setPlayerSecret(player, message.secret);
 

@@ -1,7 +1,7 @@
 package net.macmv.colacoin.network.handler;
 
+import net.macmv.colacoin.database.AccountStatus;
 import net.macmv.colacoin.database.CCDatabase;
-import net.macmv.colacoin.database.LoginResult;
 import net.macmv.colacoin.database.QueryResponse;
 import net.macmv.colacoin.database.QuerySuccess;
 import net.macmv.colacoin.network.packet.BankRequest;
@@ -21,13 +21,12 @@ public class BankRequestHandler implements IMessageHandler<BankRequest, BankResp
       return new BankResponse(false);
     }
 
-    QueryResponse<LoginResult> res = CCDatabase.INSTANCE.login(player, secret);
+    QueryResponse<AccountStatus> res = CCDatabase.INSTANCE.status(secret);
 
     if (res instanceof QuerySuccess) {
-      LoginResult out = ((QuerySuccess<LoginResult>) res).value;
+      AccountStatus out = ((QuerySuccess<AccountStatus>) res).value;
 
-      // TODO: Fetch balance instead of `login` above.
-      return new BankResponse(true, out.username, 5);
+      return new BankResponse(true, out.username, out.balance);
     } else {
       return new BankResponse(false);
     }

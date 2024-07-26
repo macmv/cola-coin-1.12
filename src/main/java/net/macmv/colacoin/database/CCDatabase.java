@@ -2,7 +2,6 @@ package net.macmv.colacoin.database;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.entity.player.EntityPlayerMP;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -24,8 +23,8 @@ public class CCDatabase {
 
   public static CCDatabase INSTANCE = new CCDatabase();
 
-  public QueryResponse<LoginResult> login(EntityPlayerMP player, String secret) {
-    return post(secret, "Query.identity()?.discord_name", new HashMap<>(), LoginResult.class);
+  public QueryResponse<AccountStatus> status(String secret) {
+    return post(secret, "Query.identity() { username: .discord_name, balance }", new HashMap<>(), AccountStatus.class);
   }
 
   private HttpClient client = HttpClients.createDefault();
