@@ -80,15 +80,15 @@ public class LoginScreen extends GuiScreen {
       secret += GuiScreen.getClipboardString();
     }
 
-    if (secret.length() > 40) {
-      secret = secret.substring(0, 40);
+    if (secret.length() > 64) {
+      secret = secret.substring(0, 64);
     }
   }
-  public void onLoginResponse(LoginResponse message) {
+  public void onLoginResponse(LoginResponse res) {
     if (this.requested) {
       this.requested = false;
-      this.success = message.success;
-      this.secret = "Success!";
+      this.success = res.success;
+      this.secret = res.message;
     }
   }
 

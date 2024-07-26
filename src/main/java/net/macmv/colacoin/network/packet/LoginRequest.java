@@ -17,7 +17,7 @@ public class LoginRequest implements IMessage {
   public void fromBytes(ByteBuf bytes) {
     PacketBuffer buf = new PacketBuffer(bytes);
 
-    secret = buf.readString(40);
+    secret = buf.readString(64);
   }
 
   @Override
