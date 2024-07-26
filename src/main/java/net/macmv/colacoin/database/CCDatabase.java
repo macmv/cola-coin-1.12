@@ -26,10 +26,15 @@ public class CCDatabase {
   public QueryResponse<AccountStatus> status(String secret) {
     return post(secret, "Query.identity() { username: .discord_name, balance }", new HashMap<>(), AccountStatus.class);
   }
+  public QueryResponse<Voucher> create_voucher(String secret, int amount) {
+    Map<String, Integer> args = new HashMap<>();
+    args.put("amount", amount);
+    return post(secret, "create_voucher(amount)", args, Voucher.class);
+  }
 
   private HttpClient client = HttpClients.createDefault();
 
-  private <T extends JsonValue> QueryResponse<T> post(String secret, String query, Map<String, String> args, Class<T> clazz) {
+  private <T extends JsonValue> QueryResponse<T> post(String secret, String query, Map<String, Integer> args, Class<T> clazz) {
     try {
       return parseResponse(client.execute(buildRequest(secret, query, args)), clazz);
     } catch (IOException e) {
@@ -37,7 +42,7 @@ public class CCDatabase {
     }
   }
 
-  private HttpPost buildRequest(String secret, String query, Map<String, String> args) {
+  private HttpPost buildRequest(String secret, String query, Map<String, Integer> args) {
     try {
       HttpPost post = new HttpPost(FAUNA);
 
@@ -50,7 +55,7 @@ public class CCDatabase {
 
       writer.name("arguments");
       writer.beginObject();
-      for (Map.Entry<String, String> entry : args.entrySet()) {
+      for (Map.Entry<String, Integer> entry : args.entrySet()) {
         writer.name(entry.getKey());
         writer.value(entry.getValue());
       }
