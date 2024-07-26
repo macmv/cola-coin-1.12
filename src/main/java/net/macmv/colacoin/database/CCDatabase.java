@@ -27,14 +27,19 @@ public class CCDatabase {
     return post(secret, "Query.identity() { username: .discord_name, balance }", new HashMap<>(), AccountStatus.class);
   }
   public QueryResponse<Voucher> create_voucher(String secret, int amount) {
-    Map<String, Integer> args = new HashMap<>();
-    args.put("amount", amount);
+    Map<String, Long> args = new HashMap<>();
+    args.put("amount", (long) amount);
     return post(secret, "create_voucher(amount)", args, Voucher.class);
+  }
+  public QueryResponse<RedeemedVoucher> redeem_voucher(String secret, long id) {
+    Map<String, Long> args = new HashMap<>();
+    args.put("id", id);
+    return post(secret, "redeem_voucher(Voucher(id))", args, RedeemedVoucher.class);
   }
 
   private HttpClient client = HttpClients.createDefault();
 
-  private <T extends JsonValue> QueryResponse<T> post(String secret, String query, Map<String, Integer> args, Class<T> clazz) {
+  private <T extends JsonValue> QueryResponse<T> post(String secret, String query, Map<String, Long> args, Class<T> clazz) {
     try {
       return parseResponse(client.execute(buildRequest(secret, query, args)), clazz);
     } catch (IOException e) {
@@ -42,7 +47,7 @@ public class CCDatabase {
     }
   }
 
-  private HttpPost buildRequest(String secret, String query, Map<String, Integer> args) {
+  private HttpPost buildRequest(String secret, String query, Map<String, Long> args) {
     try {
       HttpPost post = new HttpPost(FAUNA);
 
@@ -55,7 +60,7 @@ public class CCDatabase {
 
       writer.name("arguments");
       writer.beginObject();
-      for (Map.Entry<String, Integer> entry : args.entrySet()) {
+      for (Map.Entry<String, Long> entry : args.entrySet()) {
         writer.name(entry.getKey());
         writer.value(entry.getValue());
       }

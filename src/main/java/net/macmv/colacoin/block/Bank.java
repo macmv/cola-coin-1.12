@@ -2,13 +2,16 @@ package net.macmv.colacoin.block;
 
 import net.macmv.colacoin.Utils;
 import net.macmv.colacoin.gui.BankScreen;
+import net.macmv.colacoin.item.CCItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -32,13 +35,23 @@ public class Bank extends Block {
   }
 
   @Override
-  public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-    // All the interaction is client-side only.
-    if (!worldIn.isRemote) {
-      return true;
+  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    if (player.getHeldItem(hand).getItem() == CCItems.VOUCHER) {
+      if (!world.isRemote) {
+        // Redeeming the voucher is serverside.
+        boolean success = CCItems.VOUCHER.redeem(player, player.getHeldItem(hand));
+
+        if (success) {
+          world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.BLOCKS, 1, 1);
+        }
+      }
+    } else {
+      if (world.isRemote) {
+        // GUI is clientside.
+        Minecraft.getMinecraft().displayGuiScreen(new BankScreen());
+      }
     }
 
-    Minecraft.getMinecraft().displayGuiScreen(new BankScreen());
     return true;
   }
 }
