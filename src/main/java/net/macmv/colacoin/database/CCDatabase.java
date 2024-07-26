@@ -25,7 +25,7 @@ public class CCDatabase {
   public static CCDatabase INSTANCE = new CCDatabase();
 
   public QueryResponse<LoginResult> login(EntityPlayerMP player, String secret) {
-    return post(secret, "Query.identity()?.discord_id", new HashMap<>(), LoginResult.class);
+    return post(secret, "Query.identity()?.discord_name", new HashMap<>(), LoginResult.class);
   }
 
   private HttpClient client = HttpClients.createDefault();
