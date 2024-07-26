@@ -16,6 +16,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Bank extends Block {
   private static final AxisAlignedBB BOUNDING_BOX = Utils.aabb(1, 0, 1, 15, 16, 15);
@@ -47,11 +49,16 @@ public class Bank extends Block {
       }
     } else {
       if (world.isRemote) {
-        // GUI is clientside.
-        Minecraft.getMinecraft().displayGuiScreen(new BankScreen());
+        openBankScreen();
       }
     }
 
     return true;
+  }
+
+  @SideOnly(Side.CLIENT)
+  private void openBankScreen() {
+    // NB: Can't refer to `BankScreen` in server-side functions.
+    Minecraft.getMinecraft().displayGuiScreen(new BankScreen());
   }
 }

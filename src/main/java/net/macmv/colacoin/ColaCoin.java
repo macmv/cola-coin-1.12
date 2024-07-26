@@ -56,9 +56,6 @@ public class ColaCoin {
 
     // Both sides need serverbound packets, for integrated servers. Note that packet IDs are shared
     // between client and server, so the server must be registered first.
-    CPacketHandler.registerServer();
-    if (e.getSide().isClient()) {
-      CPacketHandler.registerClient();
-    }
+    CPacketHandler.register();
   }
 }

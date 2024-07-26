@@ -7,13 +7,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class CPacketHandler {
-  public static void registerServer() {
+  public static void register() {
     registerServer(new LoginRequestHandler(), LoginRequest.class);
     registerServer(new BankRequestHandler(), BankRequest.class);
     registerServer(new CreateVoucherRequestHandler(), CreateVoucherRequest.class);
-  }
 
-  public static void registerClient() {
     registerClient(new LoginResponseHandler(), LoginResponse.class);
     registerClient(new BankResponseHandler(), BankResponse.class);
     registerClient(new CreateVoucherResponseHandler(), CreateVoucherResponse.class);
