@@ -1,7 +1,7 @@
 package net.macmv.colacoin.block;
 
 import net.macmv.colacoin.Utils;
-import net.macmv.colacoin.gui.LoginScreen;
+import net.macmv.colacoin.gui.BankScreen;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -38,7 +38,7 @@ public class Bank extends Block {
       return true;
     }
 
-    Minecraft.getMinecraft().displayGuiScreen(new LoginScreen());
+    Minecraft.getMinecraft().displayGuiScreen(new BankScreen());
     return true;
   }
 }

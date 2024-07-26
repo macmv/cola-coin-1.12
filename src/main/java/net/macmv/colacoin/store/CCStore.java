@@ -58,4 +58,8 @@ public class CCStore extends WorldSavedData {
     this.secrets.put(player.getUniqueID(), secret);
     this.markDirty();
   }
+
+  public String getPlayerSecret(EntityPlayerMP player) {
+    return this.secrets.get(player.getUniqueID());
+  }
 }
