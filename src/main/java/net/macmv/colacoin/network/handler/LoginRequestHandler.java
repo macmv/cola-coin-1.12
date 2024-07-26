@@ -7,7 +7,6 @@ import net.macmv.colacoin.database.QuerySuccess;
 import net.macmv.colacoin.network.packet.LoginRequest;
 import net.macmv.colacoin.network.packet.LoginResponse;
 import net.macmv.colacoin.store.CCStore;
-import net.macmv.colacoin.store.PlayerStore;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -22,7 +21,7 @@ public class LoginRequestHandler implements IMessageHandler<LoginRequest, LoginR
     if (res instanceof QuerySuccess) {
       LoginResult out = ((QuerySuccess<LoginResult>) res).value;
 
-      CCStore.get(player.world).setPlayer(player, new PlayerStore(out.username, message.secret));
+      CCStore.get(player.world).setPlayerSecret(player, message.secret);
 
       return new LoginResponse(true, "Logged in as " + out.username);
     } else {

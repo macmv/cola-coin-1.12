@@ -14,7 +14,7 @@ import java.util.UUID;
 public class CCStore extends WorldSavedData {
   private static final String DATA_NAME = ColaCoin.MODID + "_store";
 
-  private final HashMap<UUID, PlayerStore> players = new HashMap<>();
+  private final HashMap<UUID, String> secrets = new HashMap<>();
 
   public CCStore() {
     super(DATA_NAME);
@@ -37,30 +37,25 @@ public class CCStore extends WorldSavedData {
 
   @Override
   public void readFromNBT(NBTTagCompound nbt) {
-    NBTTagCompound players = nbt.getCompoundTag("players");
+    NBTTagCompound players = nbt.getCompoundTag("secrets");
     for (String key : players.getKeySet()) {
       UUID uuid = UUID.fromString(key);
-      PlayerStore value = PlayerStore.fromNBT(players.getCompoundTag(key));
-      this.players.put(uuid, value);
+      this.secrets.put(uuid, players.getString(key));
     }
   }
 
   @Override
   public NBTTagCompound writeToNBT(NBTTagCompound compound) {
     NBTTagCompound secrets = new NBTTagCompound();
-    for (Map.Entry<UUID, PlayerStore> pair : this.players.entrySet()) {
-      secrets.setTag(pair.getKey().toString(), pair.getValue().toNBT());
+    for (Map.Entry<UUID, String> pair : this.secrets.entrySet()) {
+      secrets.setString(pair.getKey().toString(), pair.getValue());
     }
     compound.setTag("secrets", secrets);
     return compound;
   }
 
-  public void setPlayer(EntityPlayerMP player, PlayerStore playerStore) {
-    this.players.put(player.getUniqueID(), playerStore);
+  public void setPlayerSecret(EntityPlayerMP player, String secret) {
+    this.secrets.put(player.getUniqueID(), secret);
     this.markDirty();
-  }
-
-  public PlayerStore getPlayer(EntityPlayerMP player) {
-    return this.players.get(player.getUniqueID());
   }
 }
