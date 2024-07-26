@@ -3,6 +3,8 @@ package net.macmv.colacoin.gui;
 import net.macmv.colacoin.ColaCoin;
 import net.macmv.colacoin.network.packet.BankRequest;
 import net.macmv.colacoin.network.packet.BankResponse;
+import net.macmv.colacoin.network.packet.CreateVoucherRequest;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -26,6 +28,8 @@ public class BankScreen extends GuiScreen {
   public void initGui() {
     this.x = (this.width - this.windowWidth) / 2;
     this.y = (this.height - this.windowHeight) / 2;
+
+    buttonList.add(new CreateVoucherButton(100, x + 100, y + 150));
 
     ColaCoin.NETWORK.sendToServer(new BankRequest());
   }
@@ -63,5 +67,20 @@ public class BankScreen extends GuiScreen {
     GlStateManager.popMatrix();
 
     super.drawScreen(mouseX, mouseY, partialTicks);
+  }
+
+  @Override
+  protected void actionPerformed(GuiButton button) {
+    if (button instanceof CreateVoucherButton) {
+      // TODO: Type in an amount!
+      ColaCoin.NETWORK.sendToServer(new CreateVoucherRequest(100));
+    }
+  }
+
+  @SideOnly(Side.CLIENT)
+  private class CreateVoucherButton extends GuiButton {
+    public CreateVoucherButton(int buttonId, int x, int y) {
+      super(buttonId, x, y, 200, 20, "Create Voucher");
+    }
   }
 }
