@@ -46,7 +46,21 @@ public class HttpConnection {
       response.body = body.toString();
       return response;
     } catch (IOException e) {
-      throw new RuntimeException(e); // TODO: Maybe nicer exception handling?
+      try {
+        byte[] buf = new byte[1024];
+        int n = conn.getErrorStream().read(buf);
+        StringBuilder body = new StringBuilder();
+        while (n != -1) {
+          body.append(new String(buf, 0, n));
+          n = conn.getErrorStream().read(buf);
+        }
+
+        HttpResponse response = new HttpResponse();
+        response.body = body.toString();
+        return response;
+      } catch (IOException e2) {
+        throw new RuntimeException(e2);
+      }
     } finally {
       conn.disconnect();
     }
