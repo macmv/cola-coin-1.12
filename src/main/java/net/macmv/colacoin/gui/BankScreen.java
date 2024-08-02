@@ -43,7 +43,6 @@ public class BankScreen extends GuiScreen {
   }
 
   public void onBankResponse(BankResponse res) {
-    System.out.println("Got response: " + res.loggedIn + " " + res.username + " " + res.balance);
     this.loggedIn = res.loggedIn;
     this.username = res.username;
     this.balance = res.balance;
