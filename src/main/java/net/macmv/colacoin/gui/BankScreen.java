@@ -4,6 +4,7 @@ import net.macmv.colacoin.ColaCoin;
 import net.macmv.colacoin.network.packet.BankRequest;
 import net.macmv.colacoin.network.packet.BankResponse;
 import net.macmv.colacoin.network.packet.CreateVoucherRequest;
+import net.macmv.colacoin.network.packet.CreateVoucherResponse;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,9 +12,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.io.IOException;
+
 @SideOnly(Side.CLIENT)
 public class BankScreen extends GuiScreen {
-  private static final ResourceLocation LOGIN_BACKGROUND = new ResourceLocation("colacoin:textures/gui/login_background.png");
+  private static final ResourceLocation LOGIN_BACKGROUND = new ResourceLocation("colacoin:textures/gui/bank_background.png");
 
   protected final int windowWidth = 368;
   protected final int windowHeight = 224;
@@ -24,12 +27,17 @@ public class BankScreen extends GuiScreen {
   private String username = "";
   private int balance = 0;
 
+  private String typedAmount = "";
+
+  private String message = "";
+  private boolean success = false;
+
   @Override
   public void initGui() {
     this.x = (this.width - this.windowWidth) / 2;
     this.y = (this.height - this.windowHeight) / 2;
 
-    buttonList.add(new CreateVoucherButton(100, x + 100, y + 150));
+    buttonList.add(new CreateVoucherButton(100, x + 220, y + 150));
 
     ColaCoin.NETWORK.sendToServer(new BankRequest());
   }
@@ -57,12 +65,18 @@ public class BankScreen extends GuiScreen {
     drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.windowWidth, this.windowHeight, 512, 256);
 
     if (loggedIn) {
-      drawString(fontRenderer, "Logged in as " + username, 50, 100, 0xffffff);
-      drawString(fontRenderer, "Balance: " + balance, 50, 130, 0xffffff);
+      drawString(fontRenderer, "Logged in as " + username, 50, 70, 0xffffff);
+      drawString(fontRenderer, "Balance: " + balance, 50, 100, 0xffffff);
     } else {
+      // TODO: Loading icon when not logged in (you wish lmao)
       drawString(fontRenderer, "Not logged in", 50, 100, 0xffffff);
     }
-    // TODO: Loading icon when not logged in
+
+    int width = fontRenderer.getStringWidth(typedAmount);
+    drawString(fontRenderer, typedAmount, 76, 158, 0xffffff);
+    drawRect(76 + width, 157, 77 + width, 158 + fontRenderer.FONT_HEIGHT, 0xff000000);
+
+    drawCenteredString(fontRenderer, message, windowWidth / 2, 190, success ? 0x00ff00 : 0xff0000);
 
     GlStateManager.popMatrix();
 
@@ -70,17 +84,53 @@ public class BankScreen extends GuiScreen {
   }
 
   @Override
+  protected void keyTyped(char typed, int keyCode) throws IOException {
+    super.keyTyped(typed, keyCode);
+
+    if ((typed >= 'a' && typed <= 'z') || (typed >= 'A' && typed <= 'Z') || (typed >= '0' && typed <= '9') || typed == '_' || typed == '-') {
+      typedAmount += typed;
+    }
+
+    if (typed == '\b' && !typedAmount.isEmpty()) {
+      typedAmount = typedAmount.substring(0, typedAmount.length() - 1);
+    }
+
+    if (typed == 22 /* Ctrl+V */) {
+      typedAmount += GuiScreen.getClipboardString();
+    }
+
+    if (typedAmount.length() > 32) {
+      typedAmount = typedAmount.substring(0, 32);
+    }
+  }
+
+  @Override
   protected void actionPerformed(GuiButton button) {
     if (button instanceof CreateVoucherButton) {
-      // TODO: Type in an amount!
-      ColaCoin.NETWORK.sendToServer(new CreateVoucherRequest(100));
+      try {
+        int amount = Integer.parseInt(typedAmount);
+        ColaCoin.NETWORK.sendToServer(new CreateVoucherRequest(amount));
+      } catch (NumberFormatException ignored) {
+        this.message = "Invalid amount";
+        this.success = false;
+      }
+    }
+  }
+
+  public void onCreateVoucherResponse(CreateVoucherResponse message) {
+    this.success = message.success;
+    if (this.success) {
+      this.message = "Created voucher for " + message.amount;
+      this.balance -= message.amount;
+    } else {
+      this.message = "Failed to create voucher";
     }
   }
 
   @SideOnly(Side.CLIENT)
   private class CreateVoucherButton extends GuiButton {
     public CreateVoucherButton(int buttonId, int x, int y) {
-      super(buttonId, x, y, 200, 20, "Create Voucher");
+      super(buttonId, x, y, 100, 20, "Create Voucher");
     }
   }
 }
